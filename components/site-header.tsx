@@ -24,7 +24,7 @@ export function SiteHeader() {
             </a>
           ))}
           <a
-            href={`mailto:${site.email}`}
+            href="/#contact"
             className="kicker rounded-full border border-border px-3 py-1.5 !text-[0.68rem] text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             Get in touch

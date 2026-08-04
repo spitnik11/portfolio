@@ -17,13 +17,13 @@ export function ProjectGrid() {
 
   return (
     <section id="work" className="container scroll-mt-24 py-20">
-      <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-10 flex flex-col items-center gap-6 text-center">
         <div>
           <p className="kicker mb-3">Selected work</p>
           <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
             Projects &amp; ideas
           </h2>
-          <p className="mt-3 max-w-xl text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             Each card is a front-end concept. Open one to see the problem, the approach, and the
             proof of concept underneath.
           </p>

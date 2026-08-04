@@ -16,9 +16,9 @@ const item = {
 
 export function Hero() {
   return (
-    <section className="container flex min-h-[82vh] flex-col justify-center py-24">
+    <section className="container flex min-h-[82vh] flex-col items-center justify-center py-24 text-center">
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl">
-        <motion.div variants={item} className="mb-8 flex items-center gap-3">
+        <motion.div variants={item} className="mb-8 flex items-center justify-center gap-3">
           <span className="relative flex h-2.5 w-2.5">
             {site.available && (
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
@@ -47,19 +47,19 @@ export function Hero() {
 
         <motion.p
           variants={item}
-          className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
+          className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
         >
           {site.subhead}
         </motion.p>
 
-        <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-3">
+        <motion.div variants={item} className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg">
             <a href="#work">
               See the work <ArrowDown className="transition-transform group-hover:translate-y-0.5" />
             </a>
           </Button>
           <Button asChild size="lg" variant="outline">
-            <a href={`mailto:${site.email}`}>
+            <a href="#contact">
               Start a project <ArrowUpRight />
             </a>
           </Button>

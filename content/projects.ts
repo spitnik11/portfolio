@@ -78,26 +78,44 @@ export const projects: Project[] = [
     links: [{ label: "Case study", href: "https://example.com" }],
   },
   {
-    slug: "idea-one",
+    slug: "knowledge-copilot",
     type: "idea",
-    title: "Idea One",
-    tagline: "A concept you're exploring, not yet shipped.",
+    title: "Knowledge Copilot",
+    tagline: "A grounded AI assistant that answers from your company's own docs.",
     poster: "from-sky-500 via-blue-500 to-indigo-500",
-    concept: "Pitch the idea. Ideas signal where your thinking is headed.",
-    problem: "The gap in the market or workflow this idea would fill.",
-    approach: "Your proposed approach and any early prototype notes.",
-    stack: ["Concept", "Prototype"],
+    concept:
+      "A retrieval-augmented (RAG) assistant that sits on top of your internal knowledge — SOPs, runbooks, past tickets, Notion and Drive — and gives employees instant, sourced answers instead of pinging a teammate or digging through wikis.",
+    problem:
+      "Teams lose hours every week re-answering the same questions and hunting for information scattered across tools. New hires ramp slowly; experts get interrupted constantly. The knowledge exists — it just isn't reachable at the moment someone needs it.",
+    approach:
+      "Ingest and chunk your documents, embed them into a vector store (e.g. pgvector), and retrieve the most relevant passages at query time so the model answers only from your material — with citations back to the source. Deploys as a Slack bot or web widget. RAG-powered internal assistants are shown to cut support resolution time by roughly half; I scope the right data sources and guardrails for your stack.",
+    stack: ["RAG", "Embeddings", "pgvector", "OpenAI / Claude", "Slack API"],
+    links: [
+      {
+        label: "Reference: RAG cuts resolution time ~50%",
+        href: "https://www.cloudjournee.com/blog/how-rag-powered-ai-is-cutting-support-ticket-resolution-time-by-50/",
+      },
+    ],
   },
   {
-    slug: "idea-two",
+    slug: "ticket-triage-agent",
     type: "idea",
-    title: "Idea Two",
-    tagline: "Another direction on the whiteboard.",
+    title: "Ticket Triage Agent",
+    tagline: "AI that reads every incoming ticket, tags it, and drafts the reply.",
     poster: "from-fuchsia-500 via-pink-500 to-rose-500",
-    concept: "Pitch the second idea.",
-    problem: "What it would solve.",
-    approach: "Early thinking on how you'd build it.",
-    stack: ["Concept"],
+    concept:
+      "An agent that watches your support or IT queue, classifies each new ticket by intent and priority, routes it to the right owner, and drafts a first-response — resolving the routine tier-1 requests automatically.",
+    problem:
+      "Manual triage is slow and inconsistent: tickets sit unassigned, priorities get missed, and agents burn time on password resets and FAQs instead of the hard cases. Response times slip and customers feel it.",
+    approach:
+      "Use an LLM with function-calling to label, prioritize, and summarize each ticket, then act through your helpdesk's API (Zendesk, Freshservice, ServiceNow) — auto-answering known issues from a knowledge base and escalating the rest with context attached. Leading teams report 70%+ faster response times and high tier-1 auto-resolution; I build the classifier, the guardrails, and the human-in-the-loop review.",
+    stack: ["LLM function-calling", "Zendesk / ServiceNow API", "n8n", "Python"],
+    links: [
+      {
+        label: "Reference: AI triage cut response times 73%",
+        href: "https://www.usefini.com/blog/ai-ticket-triage-automation",
+      },
+    ],
   },
 ];
 

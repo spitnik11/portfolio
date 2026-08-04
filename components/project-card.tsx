@@ -42,7 +42,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           <ArrowUpRight className="absolute right-4 top-4 h-5 w-5 translate-y-1 text-white/0 transition-all duration-300 group-hover:translate-y-0 group-hover:text-white" />
         </div>
 
-        <div className="p-5">
+        <div className="p-5 text-center">
           <h3 className="font-display text-xl font-medium tracking-tight transition-colors group-hover:text-primary">
             {project.title}
           </h3>

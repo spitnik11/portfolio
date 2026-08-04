@@ -17,6 +17,19 @@ file** and deployed as pure static files.
 `poster` on each project is a Tailwind gradient (`from-… via-… to-…`) used as the card artwork —
 no image files, so the strict CSP stays intact.
 
+## Turn on the contact form (one-time, 2 min, free)
+
+The contact form lets visitors message you **without giving their own email** and with **no
+backend** — it relays through [Web3Forms](https://web3forms.com) straight to your inbox.
+
+1. Go to https://web3forms.com, enter your email (`losthero11@yahoo.com`), click **Create Access
+   Key**.
+2. Copy the access key they email you.
+3. Paste it into `content/site.ts` → `web3formsKey`.
+
+That's it — the form starts delivering. The key is safe to commit (it only forwards mail to you).
+Until it's set, the form shows a friendly "not configured yet" notice instead of failing.
+
 ## Run locally
 
 ```bash

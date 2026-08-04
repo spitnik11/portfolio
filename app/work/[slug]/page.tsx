@@ -51,16 +51,18 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
       {/* Hero poster echoes the card's design idea */}
       <div className={`mt-8 h-48 w-full rounded-[var(--radius)] bg-gradient-to-br ${project.poster}`} />
 
-      <div className="mt-8 flex items-center gap-3">
+      <div className="mt-8 flex items-center justify-center gap-3">
         <Badge variant={project.type === "idea" ? "muted" : "default"} className="kicker !text-[0.62rem]">
           {project.type}
         </Badge>
       </div>
 
-      <h1 className="mt-4 font-display text-4xl font-medium tracking-tight sm:text-5xl">
+      <h1 className="mt-4 text-center font-display text-4xl font-medium tracking-tight sm:text-5xl">
         {project.title}
       </h1>
-      <p className="mt-5 text-xl leading-relaxed text-foreground/85">{project.concept}</p>
+      <p className="mx-auto mt-5 max-w-2xl text-center text-xl leading-relaxed text-foreground/85">
+        {project.concept}
+      </p>
 
       <div className="mt-10">
         <Section label="The problem">{project.problem}</Section>
@@ -97,10 +99,10 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
         )}
       </div>
 
-      <div className="mt-6 border-t border-border pt-10">
+      <div className="mt-6 border-t border-border pt-10 text-center">
         <p className="text-muted-foreground">
           Want something like this built?{" "}
-          <a href={`mailto:${site.email}`} className="text-primary underline-offset-4 hover:underline">
+          <a href="/#contact" className="text-primary underline-offset-4 hover:underline">
             Get in touch
           </a>
           .
