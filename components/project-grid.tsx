@@ -24,8 +24,8 @@ export function ProjectGrid() {
             Projects &amp; ideas
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            Each card is a front-end concept. Open one to see the problem, the approach, and the
-            proof of concept underneath.
+            Each card opens into a full write-up on the idea — the thinking, the research, and how
+            it works.
           </p>
         </div>
         <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
