@@ -22,8 +22,11 @@ export interface Project {
   title: string;
   /** One line shown on the card front — the "design idea". */
   tagline: string;
-  /** Tailwind gradient classes for the card poster. */
+  /** Tailwind gradient classes for the card poster (fallback when no posterImage). */
   poster: string;
+  /** Optional screenshot for the card + detail hero (path under /public, e.g. "/shots/foo.png").
+   *  When set, it replaces the gradient. Same-origin so the strict CSP holds. */
+  posterImage?: string;
   /** Short pitch shown at the top of the detail page. */
   concept: string;
   /** Under-the-hood sections. */
@@ -36,22 +39,37 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    slug: "project-one",
+    slug: "pdf-ocr-triage",
     type: "project",
-    title: "Project One",
-    tagline: "A one-line hook describing the front-end idea.",
-    poster: "from-indigo-500 via-violet-500 to-fuchsia-500",
+    title: "PDF OCR Triage",
+    tagline: "Classify PDFs as text vs scanned and skip OCR on the ones that don't need it.",
+    poster: "from-emerald-500 via-teal-500 to-cyan-500",
+    posterImage: "/shots/pdf-ocr-triage.png",
     concept:
-      "Replace this with a 2–3 sentence pitch: what it is, who it's for, and why the design works. This text sits under the hero of the detail page.",
+      "A browser tool that inspects each PDF and decides whether it holds real text or is a scanned image — routing only the scans to paid OCR. Built as a working proof of concept from the firecrawl/pdf-inspector repo.",
     problem:
-      "What problem does it solve? Describe the pain point in a couple of sentences so a visitor immediately gets the 'why'.",
+      "Teams processing invoices, contracts, and forms at volume run every document through paid OCR by default — but a large share already contain selectable text, so that spend is wasted.",
     approach:
-      "How you built it under the hood: architecture, key decisions, the proof-of-concept. This is the 'reveal' a curious visitor came for.",
-    stack: ["Next.js", "TypeScript", "Tailwind", "OpenAI API"],
+      "A single clear prompt turned the repo's core idea into a working single-file demo: it samples each PDF's bytes for embedded-font/text signals versus image-only content, classifies text-based / scanned / mixed with a confidence, routes accordingly, and tallies the OCR cost avoided — entirely client-side, nothing uploaded. Known ceiling: compressed content streams limit raw-byte detection; the production Rust library decompresses them for precision.",
+    stack: ["Vanilla JS", "Single-file HTML", "PDF structure heuristics"],
     links: [
-      { label: "Live demo", href: "https://example.com" },
-      { label: "GitHub", href: "https://github.com/your-handle/project-one" },
+      { label: "Source repo: firecrawl/pdf-inspector", href: "https://github.com/firecrawl/pdf-inspector" },
     ],
+  },
+  {
+    slug: "local-agentic-hedge",
+    type: "idea",
+    title: "Local-model agent loops",
+    tagline: "Hedge against AI rate limits by running the bulk loop steps on a local model.",
+    poster: "from-amber-500 via-orange-500 to-rose-500",
+    posterImage: "/shots/local-agentic-hedge.png",
+    concept:
+      "An AI agent is a model in a loop — often dozens of calls per task. Route the routine steps to a local model and reserve the frontier API for the hard reasoning: the rate-limit ceiling stops being the bottleneck, and routine work never leaves the machine.",
+    problem:
+      "Point every agent call at a hosted API and a long-running job throttles itself — you pay to wait in your own queue, and throughput is capped by someone else's quota.",
+    approach:
+      "Treat the hosted model as the expensive specialist, not the default: parsing, formatting, classifying, and the quick 'is it done yet?' checks run locally; only the hard reasoning and the final answer hit the API. Route by difficulty, not by habit. The honest limit: local models are smaller, so it only pays off when you're clear about which steps actually need the big model.",
+    stack: ["Local LLMs", "Agent loops", "Tool-calling"],
   },
   {
     slug: "project-two",

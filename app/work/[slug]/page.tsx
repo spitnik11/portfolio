@@ -48,8 +48,17 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
         <ArrowLeft className="h-4 w-4" /> Back to work
       </Link>
 
-      {/* Hero poster echoes the card's design idea */}
-      <div className={`mt-8 h-48 w-full rounded-[var(--radius)] bg-gradient-to-br ${project.poster}`} />
+      {/* Hero poster — screenshot when provided, else the gradient */}
+      {project.posterImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={project.posterImage}
+          alt={project.title}
+          className="mt-8 w-full rounded-[var(--radius)] border border-border"
+        />
+      ) : (
+        <div className={`mt-8 h-48 w-full rounded-[var(--radius)] bg-gradient-to-br ${project.poster}`} />
+      )}
 
       <div className="mt-8 flex items-center justify-center gap-3">
         <Badge variant={project.type === "idea" ? "muted" : "default"} className="kicker !text-[0.62rem]">
