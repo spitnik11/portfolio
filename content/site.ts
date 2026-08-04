@@ -25,7 +25,7 @@ export const site = {
   //   2. Enter your email (losthero11@yahoo.com) and click "Create Access Key"
   //   3. Copy the access key they email you and paste it below.
   // The key is safe to expose publicly — it only forwards messages to your inbox.
-  web3formsKey: "YOUR_WEB3FORMS_ACCESS_KEY",
+  web3formsKey: "b76ddd2c-ef38-4ac8-aab6-a268894cdc90",
 
   // Social / proof links. Remove any you don't want; the header maps over these.
   links: [
