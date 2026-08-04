@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/content/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { StarfieldBackground } from "@/components/starfield-background";
 
 // Self-hosted at build time -> no external font origin, CSP 'self' stays clean.
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark">
       <body className={`${geist.variable} ${geistMono.variable} ${fraunces.variable} font-sans`}>
+        <StarfieldBackground />
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
