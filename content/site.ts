@@ -10,7 +10,7 @@ export const site = {
   headline: "AI solutions that streamline how your team works.",
   // One or two sentences under the headline.
   subhead:
-    "I'm an AI consultant. I design and deploy practical AI systems that automate the busywork, speed up your workflows, and turn ideas into tools you can actually use. Available for new projects.",
+    "I'm an AI consultant. I design and deploy practical AI systems that *automate the busywork*, *speed up your workflows*, and turn ideas into **tools you can actually use**. Available for new projects.",
   // Set false to show a muted "not currently available" state instead of the green dot.
   available: true,
   availableText: "Available for new projects",

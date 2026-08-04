@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { projects, getProject } from "@/content/projects";
 import { site } from "@/content/site";
+import { emphasize, stripEmphasis } from "@/lib/emphasis";
 
 // One static page per project entry — shareable URLs, no server needed.
 export function generateStaticParams() {
@@ -21,7 +22,7 @@ export async function generateMetadata({
   if (!project) return {};
   return {
     title: `${project.title} — ${site.name}`,
-    description: project.concept,
+    description: stripEmphasis(project.concept),
   };
 }
 
@@ -65,10 +66,10 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 
       {/* Single flowing article — a readable column, no section labels. */}
       <div className="mx-auto mt-10 max-w-2xl">
-        <p className="text-xl leading-relaxed text-foreground/90">{project.concept}</p>
+        <p className="text-xl leading-relaxed text-foreground/90">{emphasize(project.concept)}</p>
         {paragraphs.map((para, i) => (
           <p key={i} className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            {para}
+            {emphasize(para)}
           </p>
         ))}
       </div>

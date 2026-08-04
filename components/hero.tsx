@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/content/site";
+import { emphasize } from "@/lib/emphasis";
 
 const container = {
   hidden: {},
@@ -49,7 +50,7 @@ export function Hero() {
           variants={item}
           className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
         >
-          {site.subhead}
+          {emphasize(site.subhead)}
         </motion.p>
 
         <motion.div variants={item} className="mt-10 flex flex-wrap items-center justify-center gap-3">
