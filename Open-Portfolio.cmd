@@ -1,11 +1,5 @@
 @echo off
-REM Launches the portfolio locally and opens it in your browser.
-REM Double-click the desktop "Portfolio" icon, or run this file directly.
-cd /d "Z:\Claude app\portfolio"
-
-REM Start the dev server in its own window (leave it running while you view).
-start "Portfolio server" cmd /c "npm run dev"
-
-REM Give it a few seconds to boot, then open the browser.
-timeout /t 5 /nobreak >nul
-start "" http://localhost:3000
+REM Desktop "Portfolio" icon launches this. It hands off to the PowerShell
+REM launcher, which starts the local server, waits until it's ready, then
+REM opens your browser. Close the "npm run dev" window to stop the site.
+start "" powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0Open-Portfolio.ps1"
