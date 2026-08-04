@@ -5,6 +5,7 @@ import { site } from "@/content/site";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StarfieldBackground } from "@/components/starfield-background";
+import { stripEmphasis } from "@/lib/emphasis";
 
 // Self-hosted at build time -> no external font origin, CSP 'self' stays clean.
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -17,10 +18,11 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: `${site.name} — ${site.role}`,
-  description: site.subhead,
+  description: stripEmphasis(site.subhead),
+  icons: { icon: "/favicon.ico" },
   openGraph: {
     title: `${site.name} — ${site.role}`,
-    description: site.subhead,
+    description: stripEmphasis(site.subhead),
     type: "website",
   },
   robots: { index: true, follow: true },
