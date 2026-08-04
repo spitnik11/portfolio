@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   Committed dark, editorial-technical theme. Change these HSL triples to
+   re-skin the whole site. Accent = electric lime, used sparingly.          */
+:root {
+  --background: 240 6% 6%;
+  --foreground: 40 24% 96%;
+  --card: 240 5% 8.5%;
+  --card-foreground: 40 24% 96%;
+  --muted: 240 5% 13%;
+  --muted-foreground: 240 5% 62%;
+  --accent: 240 5% 14%;
+  --accent-foreground: 40 24% 96%;
+  --primary: 72 96% 56%;          /* electric lime */
+  --primary-foreground: 240 8% 6%;
+  --border: 240 5% 16%;
+  --input: 240 5% 16%;
+  --ring: 72 96% 56%;
+  --radius: 0.9rem;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle grain + a soft accent glow anchored top-right for atmosphere. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, hsl(72 96% 56% / 0.10), transparent 60%),
+    radial-gradient(50rem 40rem at 0% 100%, hsl(268 80% 60% / 0.08), transparent 60%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Keep real content above the atmosphere layers. */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Monospace technical label helper. */
+.kicker {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.85);
+  color: hsl(var(--primary-foreground));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
