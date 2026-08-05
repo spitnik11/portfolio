@@ -43,7 +43,7 @@ export const site = {
       "Built to run on your stack, handed over with a short walkthrough",
     ],
     ctaLabel: "Book a 15-minute call",
-    bookingUrl: "https://cal.com/spitnik11",
+    bookingUrl: "https://cal.com/gabrielpina",
   },
 
   // ── Lead magnet (the /join page) ────────────────────────────────────────────
