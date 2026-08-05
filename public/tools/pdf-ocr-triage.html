@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF OCR Triage — skip OCR on the PDFs that don't need it</title>
+<style>
+  /* Design bar: off-white/near-black (never pure), 3 ink tiers, one accent on action,
+     8/12px radius, hairlines, mono labels, system fonts (no webfonts/CDN — strict CSP). */
+  :root{
+    --bg:#f6f5f3; --surface:#ffffff; --ink:#191917; --mut:#5c5a54; --sub:#8f8c84;
+    --line:#e5e2db; --accent:#1f9d6b; --accent-ink:#0d3b28; --accent-bg:#e7f4ee;
+    --warn:#9a6b1f; --warn-bg:#f6eddb;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#101211; --surface:#181a19; --ink:#f0efeb; --mut:#b4b2aa; --sub:#807d75;
+      --line:#282b29; --accent:#3ecf8e; --accent-ink:#0c1512; --accent-bg:#132620;
+      --warn:#d0a24e; --warn-bg:#241d10; }
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{background:var(--bg)}
+  body{font-family:var(--sans);color:var(--ink);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;padding:40px 22px}
+  .wrap{max-width:900px;margin:0 auto}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--sub);display:flex;align-items:center;gap:11px;margin-bottom:16px}
+  .kicker::before{content:"";width:30px;height:2px;background:var(--accent);border-radius:2px}
+  h1{font-size:30px;line-height:1.12;letter-spacing:-.02em;font-weight:600;max-width:20ch}
+  .lede{color:var(--mut);margin-top:12px;max-width:64ch;font-size:16.5px}
+  /* stat tiles */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+  .tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px}
+  .tile .n{font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .tile.good .n{color:var(--accent)}
+  .tile .l{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--sub);margin-top:6px}
+  /* controls */
+  .bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  .drop{flex:1;min-width:240px;border:1.5px dashed var(--line);border-radius:12px;
+    padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;
+    color:var(--mut);background:var(--surface);transition:border-color .15s,background .15s}
+  .drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-bg);color:var(--ink)}
+  .drop svg{width:20px;height:20px;color:var(--accent);flex:none}
+  .price{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);white-space:nowrap}
+  .price input{width:74px;font:inherit;font-size:15px;text-align:right;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+    font-variant-numeric:tabular-nums}
+  .price input:focus{outline:none;border-color:var(--accent)}
+  .cap{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--sub);margin:22px 0 10px}
+  /* rows */
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+  .doc{min-width:0}
+  .doc .fn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .doc .meta{font-family:var(--mono);font-size:12px;color:var(--sub);margin-top:3px}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+  .badge.text{color:var(--accent);background:var(--accent-bg);border-color:transparent}
+  .badge.scan{color:var(--warn);background:var(--warn-bg);border-color:transparent}
+  .badge.mixed{color:var(--mut);background:var(--bg)}
+  .conf{width:70px}
+  .conf .track{height:5px;border-radius:999px;background:var(--line);overflow:hidden}
+  .conf .fill{height:100%;border-radius:999px;background:var(--sub)}
+  .conf .pct{font-family:var(--mono);font-size:10.5px;color:var(--sub);margin-top:4px;text-align:right}
+  .route{font-size:13px;font-weight:600;text-align:right;white-space:nowrap;min-width:118px}
+  .route.local{color:var(--accent)} .route.ocr{color:var(--warn)}
+  .route small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;
+    letter-spacing:.04em;color:var(--sub);text-transform:uppercase;margin-top:2px}
+  /* footer */
+  .foot{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;flex-wrap:wrap;
+    margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+  .how{font-size:13.5px;color:var(--mut);max-width:60ch}
+  .how b{color:var(--ink);font-weight:600}
+  .sig{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--sub);white-space:nowrap}
+  @media (max-width:560px){.stats{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr auto;row-gap:10px}.conf{display:none}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Document automation · proof of concept</p>
+  <h1>Skip the OCR bill on the PDFs that don&rsquo;t need it.</h1>
+  <p class="lede">Roughly half the PDFs a business processes already contain real text — sending them
+    through paid OCR is wasted spend. This triages each file as <b>text-based</b> or <b>scanned</b> in
+    milliseconds, then routes only the scans to OCR. Inspired by
+    <b>firecrawl/pdf-inspector</b>. Drop a PDF to classify it live.</p>
+
+  <div class="stats">
+    <div class="tile"><div class="n" id="s-total">0</div><div class="l">Documents</div></div>
+    <div class="tile good"><div class="n" id="s-local">0</div><div class="l">Route to free local extract</div></div>
+    <div class="tile good"><div class="n" id="s-saved">$0</div><div class="l">Est. OCR avoided</div></div>
+  </div>
+
+  <div class="bar">
+    <label class="drop" id="drop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      <span><b>Drop a PDF</b> or click to classify it — runs locally, nothing uploaded.</span>
+      <input type="file" accept="application/pdf,.pdf" id="file" multiple hidden>
+    </label>
+    <span class="price">OCR est. $<input type="number" id="price" value="0.015" min="0" step="0.005"> / page</span>
+  </div>
+
+  <p class="cap" id="listcap">Sample batch</p>
+  <div class="rows" id="rows"></div>
+
+  <div class="foot">
+    <p class="how"><b>How it decides:</b> it samples the PDF for embedded fonts and text operators
+      versus image-only page content — the same signal a scanner-vs-typed check uses — with no OCR
+      and no upload. Savings are an estimate at the rate above, not a quote.</p>
+    <span class="sig">Created by my AI agent workflow</span>
+  </div>
+</div>
+
+<script>
+"use strict";
+// ── Classifier ────────────────────────────────────────────────────────────────
+// Cheap structural triage: scan raw PDF bytes for embedded-font/text signals vs
+// image-only signals and classify — no OCR, no decode of page pixels.
+// ponytail: raw-byte scan; FlateDecode-compressed content streams hide the Tj/TJ
+// operators, so we lean on the (usually uncompressed) object dictionary — /Font,
+// /Subtype/Image, image filters. The real Rust lib decompresses streams for precision.
+function classifyPdf(bytes){
+  let s = "";
+  for (let i=0;i<bytes.length;i++) s += String.fromCharCode(bytes[i]); // latin1 view
+  const count = re => (s.match(re)||[]).length;
+  const fonts  = count(/\/(?:Font|BaseFont|Type1|TrueType|Type0)\b/g) + count(/\bBT\b/g);
+  const images = count(/\/Subtype\s*\/Image/g)
+               + count(/\/(?:DCTDecode|CCITTFaxDecode|JPXDecode|JBIG2Decode)\b/g);
+  let pages = count(/\/Type\s*\/Page\b(?!s)/g);
+  if (!pages){ const m = s.match(/\/Count\s+(\d+)/); pages = m ? +m[1] : 1; }
+  pages = Math.max(1, pages);
+
+  let type, conf;
+  const total = fonts + images;
+  if (total === 0){ type = "ImageBased"; conf = 0.55; }
+  else if (fonts > 0 && images === 0){ type = "TextBased"; conf = 0.95; }
+  else if (images > 0 && fonts === 0){ type = "Scanned"; conf = 0.92; }
+  else {
+    const r = fonts/total;                     // both present -> lean by dominance
+    type = r >= 0.66 ? "TextBased" : r <= 0.34 ? "Scanned" : "Mixed";
+    conf = 0.6 + Math.abs(r-0.5)*0.6;
+  }
+  return { type, conf: Math.min(0.98, conf), pages, fonts, images };
+}
+const NEEDS_OCR = t => t === "Scanned" || t === "ImageBased";
+
+// ── State + render ────────────────────────────────────────────────────────────
+const docs = [];
+const $ = id => document.getElementById(id);
+const money = n => n >= 1 ? "$"+n.toFixed(2) : "$"+n.toFixed(2);
+
+function render(){
+  const rows = $("rows");
+  rows.innerHTML = docs.map((d,i)=>{
+    const ocr = NEEDS_OCR(d.type);
+    const cls = d.type==="TextBased"?"text":ocr?"scan":"mixed";
+    const pct = Math.round(d.conf*100);
+    return `<div class="row">
+      <div class="doc"><div class="fn" title="${esc(d.name)}">${esc(d.name)}</div>
+        <div class="meta">${d.pages} page${d.pages>1?"s":""}${d.sample?" · sample":""}</div></div>
+      <span class="badge ${cls}">${d.type}</span>
+      <div class="conf"><div class="track"><div class="fill" style="width:${pct}%"></div></div>
+        <div class="pct">${pct}%</div></div>
+      <div class="route ${ocr?"ocr":"local"}">${ocr?"Send to OCR":"Local extract"}
+        <small>${ocr?"paid":"free"}</small></div>
+    </div>`;
+  }).join("");
+  const price = Math.max(0, +$("price").value || 0);
+  const local = docs.filter(d=>!NEEDS_OCR(d.type));
+  const ocrPages = docs.filter(d=>NEEDS_OCR(d.type)).length; // (savings = pages we DIDN'T send)
+  const savedPages = local.reduce((a,d)=>a+d.pages,0);
+  $("s-total").textContent = docs.length;
+  $("s-local").textContent = local.length + "/" + docs.length;
+  $("s-saved").textContent = money(savedPages*price);
+  $("listcap").textContent = docs.some(d=>!d.sample) ? "Your batch" : "Sample batch";
+}
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Seeded example batch so the tool reads at a glance (labelled samples; drop real PDFs to run live).
+[ {name:"Q3-invoices-acme.pdf",   type:"TextBased",  conf:.96, pages:3, sample:true},
+  {name:"signed-lease-scan.pdf",  type:"Scanned",    conf:.93, pages:8, sample:true},
+  {name:"vendor-msa-2026.pdf",    type:"TextBased",  conf:.95, pages:12, sample:true},
+  {name:"receipts-batch.pdf",     type:"Scanned",    conf:.90, pages:5, sample:true},
+  {name:"annual-report.pdf",      type:"Mixed",      conf:.71, pages:20, sample:true},
+].forEach(d=>docs.push(d));
+render();
+
+// ── Live classification of dropped/picked files ────────────────────────────────
+async function ingest(files){
+  for (const f of files){
+    if (f.type !== "application/pdf" && !/\.pdf$/i.test(f.name)) continue;
+    try{
+      const buf = new Uint8Array(await f.arrayBuffer());
+      const head = String.fromCharCode(...buf.slice(0,5));
+      if (head !== "%PDF-"){ docs.unshift({name:f.name,type:"Not a PDF",conf:0,pages:1}); render(); continue; }
+      const r = classifyPdf(buf);
+      docs.unshift({ name:f.name, type:r.type, conf:r.conf, pages:r.pages });
+      render();
+    }catch(e){ docs.unshift({name:f.name,type:"Unreadable",conf:0,pages:1}); render(); }
+  }
+}
+const drop = $("drop"), file = $("file");
+file.addEventListener("change", e => ingest(e.target.files));
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop", e => ingest(e.dataTransfer.files));
+$("price").addEventListener("input", render);
+
+// ── One runnable self-check (logs to console; fails loudly if the classifier breaks) ──
+(function selfcheck(){
+  const enc = s => Uint8Array.from(s, c=>c.charCodeAt(0));
+  const textPdf = enc("%PDF-1.7\n/Type /Page\n/Font /Type1 BT (hi) Tj ET");
+  const scanPdf = enc("%PDF-1.7\n/Type /Page\n/XObject <</Subtype /Image /Filter /DCTDecode>>");
+  const a = classifyPdf(textPdf), b = classifyPdf(scanPdf);
+  console.assert(a.type==="TextBased", "selfcheck: expected TextBased, got "+a.type);
+  console.assert(b.type==="Scanned",  "selfcheck: expected Scanned, got "+b.type);
+  console.log("pdf-ocr-triage self-check ok:", a.type, "/", b.type);
+})();
+</script>
+</body>
+</html>

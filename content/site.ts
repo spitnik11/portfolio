@@ -43,8 +43,27 @@ export const site = {
       "Built to run on your stack, handed over with a short walkthrough",
     ],
     ctaLabel: "Book a 15-minute call",
-    // e.g. "https://cal.com/gabriel-pina/intro" — placeholder until you create the Cal.com link.
-    bookingUrl: "https://cal.com/your-handle/intro",
+    bookingUrl: "https://cal.com/spitnik11",
+  },
+
+  // ── Lead magnet (the /join page) ────────────────────────────────────────────
+  // Bolis-style capture: one promise, one email field, deliver a free tool. Uses the same
+  // Web3Forms key (subscribers arrive in your inbox tagged "subscriber" — filter/export them,
+  // migrate to Kit/MailerLite later). Emphasis markup supported. Swap the magnet freely.
+  leadMagnet: {
+    kicker: "Free tool",
+    headline: "Find out which PDFs you're **wasting OCR money on** — free.",
+    subhead:
+      "Drop in a batch of PDFs and this browser tool tells you which already have real text (extract them for free) and which are scans that need OCR — with the spend you'd have wasted. Runs locally, nothing uploaded.",
+    bullets: [
+      "A **working tool**, not a PDF checklist",
+      "Runs in your browser — no signup wall, no upload",
+      "Built by my AI workflow — the kind of thing I build for clients",
+    ],
+    buttonLabel: "Send me the tool",
+    // Delivered on the thank-you screen after signup. A file under /public.
+    magnetUrl: "/tools/pdf-ocr-triage.html",
+    magnetLabel: "Open the PDF OCR-Triage tool",
   },
 
   // Social / proof links. Remove any you don't want; the header maps over these.
