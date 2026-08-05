@@ -27,6 +27,26 @@ export const site = {
   // The key is safe to expose publicly — it only forwards messages to your inbox.
   web3formsKey: "b76ddd2c-ef38-4ac8-aab6-a268894cdc90",
 
+  // ── The offer (services / done-for-you) ─────────────────────────────────────
+  // The productized service. ONE clear offer + ONE next step (a booking call).
+  // `bookingUrl`: paste your Cal.com (or Calendly) link once you have it. Until then it
+  // stays a placeholder and the button falls back to the contact form — the page still works.
+  // Emphasis markup (**accent**, *bright*) is supported in headline/body/bullets.
+  offer: {
+    kicker: "Work with me",
+    headline: "I build the AI workflow. You keep the time it saves.",
+    body:
+      "Most teams don't need a bigger AI subscription — they need one **workflow built right**: the repetitive task automated end to end, so it runs without them. That's what I do, on a *fixed scope* and a *fixed price*.",
+    bullets: [
+      "A **working tool**, not a slide deck — delivered in about a week",
+      "One clear scope, one fixed price — no open-ended retainers to start",
+      "Built to run on your stack, handed over with a short walkthrough",
+    ],
+    ctaLabel: "Book a 15-minute call",
+    // e.g. "https://cal.com/gabriel-pina/intro" — placeholder until you create the Cal.com link.
+    bookingUrl: "https://cal.com/your-handle/intro",
+  },
+
   // Social / proof links. Remove any you don't want; the header maps over these.
   links: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/gabriel-pina-498023113/" },

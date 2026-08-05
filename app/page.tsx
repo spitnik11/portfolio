@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero";
 import { ProjectGrid } from "@/components/project-grid";
+import { Offer } from "@/components/offer";
 import { ContactForm } from "@/components/contact-form";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
     <>
       <Hero />
       <ProjectGrid />
+      <Offer />
 
       {/* Closing CTA + contact form */}
       <section id="contact" className="container scroll-mt-24 py-24">

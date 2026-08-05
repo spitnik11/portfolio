@@ -60,8 +60,8 @@ export function Hero() {
             </a>
           </Button>
           <Button asChild size="lg" variant="outline">
-            <a href="#contact">
-              Start a project <ArrowUpRight />
+            <a href="#work-with-me">
+              Work with me <ArrowUpRight />
             </a>
           </Button>
         </motion.div>
