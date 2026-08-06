@@ -42,8 +42,10 @@ export const site = {
       "One clear scope, one fixed price — no open-ended retainers to start",
       "Built to run on your stack, handed over with a short walkthrough",
     ],
-    ctaLabel: "Book a 15-minute call",
-    bookingUrl: "https://cal.com/gabrielpina",
+    // Funnel is list-first (no calls for now): the primary CTA is the free guide.
+    // Internal path (/join) or an external https URL both work.
+    ctaLabel: "Get the free playbook",
+    bookingUrl: "/join",
   },
 
   // ── Lead magnet (the /join page) ────────────────────────────────────────────

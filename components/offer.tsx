@@ -10,9 +10,8 @@ export function Offer() {
   const offer = site.offer;
   if (!offer) return null;
 
-  const configured = !!offer.bookingUrl && !offer.bookingUrl.includes("your-handle");
-  const href = configured ? offer.bookingUrl : "#contact";
-  const external = configured;
+  const href = offer.bookingUrl && !offer.bookingUrl.includes("your-handle") ? offer.bookingUrl : "#contact";
+  const external = /^https?:\/\//.test(href); // only real URLs open in a new tab; /join and #contact stay in-page
 
   return (
     <section id="work-with-me" className="container scroll-mt-24 py-20">
