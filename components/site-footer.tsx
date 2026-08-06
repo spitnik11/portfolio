@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { site } from "@/content/site";
 
 export function SiteFooter() {
@@ -10,12 +9,14 @@ export function SiteFooter() {
           <p className="mt-1 text-sm text-muted-foreground">{site.role}</p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          <Link
-            href="/join"
+          <a
+            href={site.leadMagnetUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-sm text-primary transition-colors hover:text-primary/80"
           >
-            Free tool
-          </Link>
+            Free guide
+          </a>
           {site.links.map((l) => (
             <a
               key={l.label}

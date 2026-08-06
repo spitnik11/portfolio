@@ -18,6 +18,9 @@ export const site = {
   // Where inquiries land. Used by the contact form (via Web3Forms) and footer.
   email: "losthero11@yahoo.com",
 
+  // The live Kit lead-magnet page — the ONE funnel destination for the offer CTA, footer, and /join.
+  leadMagnetUrl: "https://gabrielpina.kit.com/ca3e6533a3",
+
   // ── Contact form (Web3Forms) ────────────────────────────────────────────────
   // Lets visitors message you WITHOUT giving their own email, with no backend.
   // ONE-TIME SETUP (2 min, free, no account):
@@ -45,7 +48,7 @@ export const site = {
     // Funnel is list-first (no calls for now): the primary CTA is the free guide.
     // Internal path (/join) or an external https URL both work.
     ctaLabel: "Get the free playbook",
-    bookingUrl: "/join",
+    bookingUrl: "https://gabrielpina.kit.com/ca3e6533a3",
   },
 
   // ── Lead magnet (the /join page) ────────────────────────────────────────────
